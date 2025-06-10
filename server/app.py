@@ -41,6 +41,31 @@ def get_earthquake_by_id(id):
          status_code = 404
     headers = {}
     return make_response(response_body, status_code, headers)
+
+@app.route('/earthquakes/magnitude/<float:magnitude>')
+def get_earthquake_by_magnitude(magnitude):
+    answer = Earthquake.query.filter(Earthquake.magnitude >= magnitude).all()
+    response_body = {}
+    status_code = ""
+    
+    quakes = []
+    for quake in answer:
+            quakes.append({
+                "id": quake.id,
+                "location": quake.location,
+                "magnitude": quake.magnitude,
+                "year": quake.year
+            })
+            
+    response_body = jsonify({
+            "count": len(quakes),
+            "quakes": quakes
+        })
+    status_code =200
+    
+    headers = {}
+    return make_response(response_body, status_code, headers)
+
      
      
 if __name__ == '__main__':
